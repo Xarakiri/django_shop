@@ -32,3 +32,16 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
+
+class CartProduct(models.Model):
+
+    user = models.ForeignKey(Customer, verbose_name='Покупатель', on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, verbose_name='Корзина', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, verbose_name='Товар', on_delete=models.CASCADE)
+    qty = models.PositiveIntegerField(default=1)
+    final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена')
+
+    def __str__(self):
+        return 'Продукт {} (для корзины)'.format(self.product.title)
+
+
