@@ -143,3 +143,9 @@ class Smartphone(Product):
 
     def get_absolute_url(self):
         return get_prodcut_url(self, 'product_detail')
+    
+    # @property
+    # def sd(self):
+    #     if self.sd:
+    #         return 'Да'
+    #     return 'Нет'
