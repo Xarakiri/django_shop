@@ -31,7 +31,7 @@
                                 <li><a class="dropdown-item" href="#!">All Products</a></li>
                                 <li><hr class="dropdown-divider" /></li>
                                 {% for category in categories %}
-                                    <li><a class="dropdown-item" href="#!">{{ category.name }} {{ category.count }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ category.url }}">{{ category.name }} ({{ category.count }})</a></li>
                                 {% endfor %}
                             </ul>
                         </li>
