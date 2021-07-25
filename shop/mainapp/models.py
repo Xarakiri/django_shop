@@ -13,7 +13,7 @@ def get_models_for_count(*model_names):
 
 
 def get_prodcut_url(obj, viewname):
-    ct_model = obj.__clas__._meta.mode_name
+    ct_model = obj.__class__._meta.model_name
     return reverse(viewname, kwargs={'ct_model': ct_model, 'slug': obj.slug})
 
 
