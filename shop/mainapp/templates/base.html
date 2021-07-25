@@ -39,7 +39,8 @@
                             </li>
                             <style>
                                 .nounderline {
-                                    text-decoration: none !important
+                                    text-decoration: none !important;
+                                    color: black
                                   }
                             </style>
                             {% for category in categories %}
@@ -52,7 +53,7 @@
                     <button class="btn btn-outline-dark" type="submit">
                         <i class="bi-cart-fill me-1"></i>
                         <a class="nounderline" href="{% url 'cart' %}">Корзина</a>
-                        <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        <span class="badge bg-dark text-white ms-1 rounded-pill">{{ cart.product.count }}</span>
                     </button>
                 </form>
             </div>
