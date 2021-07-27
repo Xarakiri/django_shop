@@ -64,6 +64,7 @@ class AddToCartView(CartMixin, View):
         )
         if created:
             self.cart.product.add(cart_product)
+        self.cart.save()
         return HttpResponseRedirect('/cart/')
 
 

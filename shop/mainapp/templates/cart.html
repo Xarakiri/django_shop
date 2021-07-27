@@ -24,6 +24,12 @@
         </tr>
 
         {% endfor %}
+        <tr>
+            <td colspan="2"></td>
+            <td>Итого:</td>
+            <td>{{ cart.total_products }}</td>
+            <td><strong>{{ cart.final_price }}</strong></td>
+        </tr>
     </tbody>
 </table>
 
