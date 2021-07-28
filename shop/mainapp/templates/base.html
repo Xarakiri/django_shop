@@ -89,7 +89,11 @@
                         </div>
                         <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{{ product.get_absolute_url }}">Подробнее</a>
+                            <div class="text-center">
+                                <a class="btn btn-danger mt-auto mb-4" href="{% url 'add_to_cart' ct_model=product.get_model_name slug=product.slug %}">
+                                    Добавить в корзину
+                                </a>
+                                <a class="btn btn-outline-dark mt-auto" href="{{ product.get_absolute_url }}">Подробнее</a>
                             </div>
                         </div>
                     </div>
