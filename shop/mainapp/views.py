@@ -4,8 +4,8 @@ from django.views.generic import DetailView, View
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from .models import Notebook, Smartphone, Category, LatestProducts, Customer, Cart, CartProduct
-from .mixins import CategoryDetailMixin, CartMixin
+from .models import Product, Category, Customer, Cart, CartProduct
+from .mixins import  CartMixin
 from .forms import OrderForm
 from .utils import recalc_cart
 
@@ -14,7 +14,7 @@ class BaseView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
         categories = Category.objects.get_categories_for_nav_bar()
-        products = LatestProducts.objects.get_products_for_main_page('notebook', 'smartphone', with_respect_to='notebook')
+        products = Product.objects.all()
         context = {
             'categories': categories,
             'products': products,
@@ -23,17 +23,7 @@ class BaseView(CartMixin, View):
         return render(request, 'base.html', context)
 
 
-class ProductDetailView(CartMixin, CategoryDetailMixin, DetailView):
-
-    CT_MODEL_MODEL_CLASS = {
-        'notebook': Notebook, 
-        'smartphone': Smartphone,
-    }
-
-    def dispatch(self, request, *args, **kwargs):
-        self.model = self.CT_MODEL_MODEL_CLASS[kwargs['ct_model']]
-        self.queryset = self.model._base_manager.all()
-        return super().dispatch(request, *args, **kwargs)
+class ProductDetailView(CartMixin, DetailView):
 
     context_object_name = 'product'
     template_name = 'product_detail.html'
@@ -41,12 +31,11 @@ class ProductDetailView(CartMixin, CategoryDetailMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['ct_model'] = self.model._meta.model_name
         context['cart'] = self.cart
         return context
 
 
-class CategoryDetailView(CartMixin,CategoryDetailMixin, DetailView):
+class CategoryDetailView(CartMixin, DetailView):
 
     model = Category
     queryset = Category.objects.all()
