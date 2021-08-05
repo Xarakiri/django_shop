@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .models import Product, Category, Customer, Cart, CartProduct
-from .mixins import  CartMixin
+from .mixins import CartMixin
 from .forms import OrderForm
 from .utils import recalc_cart
 
@@ -13,7 +13,7 @@ from .utils import recalc_cart
 class BaseView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
-        categories = Category.objects.get_categories_for_nav_bar()
+        categories = Category.objects.all()
         products = Product.objects.all()
         context = {
             'categories': categories,
@@ -53,14 +53,12 @@ class CategoryDetailView(CartMixin, DetailView):
 class AddToCartView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
-        ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
-        content_type = ContentType.objects.get(model=ct_model)
-        product = content_type.model_class().objects.get(slug=product_slug)
+        product_slug = kwargs.get('slug')
+        product = Product.objects.get(slug=product_slug)
         cart_product, created = CartProduct.objects.get_or_create(
             user=self.cart.owner,
             cart=self.cart,
-            content_type=content_type,
-            object_id=product.id,
+            product=product,
         )
         if created:
             self.cart.product.add(cart_product)
@@ -72,14 +70,12 @@ class AddToCartView(CartMixin, View):
 class DeleteFromCartView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
-        ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
-        content_type = ContentType.objects.get(model=ct_model)
-        product = content_type.model_class().objects.get(slug=product_slug)
+        product_slug = kwargs.get('slug')
+        product = Product.objects.get(slug=product_slug)
         cart_product = CartProduct.objects.get(
             user=self.cart.owner,
             cart=self.cart,
-            content_type=content_type,
-            object_id=product.id,
+            product=product,
         )
         self.cart.product.remove(cart_product)
         cart_product.delete()
@@ -91,14 +87,12 @@ class DeleteFromCartView(CartMixin, View):
 class ChangeQTYView(CartMixin, View):
 
     def post(self, request, *args, **kwargs):
-        ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
-        content_type = ContentType.objects.get(model=ct_model)
-        product = content_type.model_class().objects.get(slug=product_slug)
+        product_slug = kwargs.get('slug')
+        product = Product.objects.get(slug=product_slug)
         cart_product = CartProduct.objects.get(
             user=self.cart.owner,
             cart=self.cart,
-            content_type=content_type,
-            object_id=product.id,
+            product=product,
         )
         qty = int(request.POST.get('qty'))
         cart_product.qty = qty
@@ -111,7 +105,7 @@ class ChangeQTYView(CartMixin, View):
 class CartView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
-        categories = Category.objects.get_categories_for_nav_bar()
+        categories = Category.objects.all()
         context = {
             'cart': self.cart,
             'categories': categories,
@@ -122,7 +116,7 @@ class CartView(CartMixin, View):
 class CheckoutView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
-        categories = Category.objects.get_categories_for_nav_bar()
+        categories = Category.objects.all()
         form = OrderForm(request.POST or None)
         context = {
             'cart': self.cart,
